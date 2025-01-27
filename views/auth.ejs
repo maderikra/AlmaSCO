@@ -1,0 +1,51 @@
+<%- include('partials/_header') %>
+<style>
+
+    body {background: var(--background-dark) ;}
+
+</style>
+<body>
+    <div class="homeMessage"><img src="img/0721_PTier1_Libraries_HS_186KW_W_Digital.png" alt="Miami University Library">
+    <h1>Self-Checkout Station</h1>
+    <div class="welcomeText">Touch screen then tap your Miami ID to begin<br><i class='bx bxs-id-card'></i></div>
+</div>
+
+<% if (message) { %>
+    <div class="alert alert-<%= message.type %>">
+      <%= message.title %> <%- message.text %> <br>
+      <%= message.duedate %>
+    </div>
+  <% } %>
+  
+  <!-- The form with a hidden input field for the barcode scanner -->
+  <form action="/auth" method="POST" id="barcodeForm">
+    <input type="text" name="barcode" id="barcode" hidden>
+    <button type="submit" hidden>Submit</button>
+  </form>
+
+  <script>
+    // JavaScript to handle scanner input
+    let scannerInput = ""; // String to accumulate scanner input
+    const barcodeInput = document.getElementById('barcode'); // The hidden input field
+
+    document.addEventListener('keypress', (event) => {
+      // Check if the Enter key was pressed
+      if (event.key === "Enter") {
+        if (scannerInput.length > 0) {
+          // Enter key pressed, set the value of the hidden input
+          barcodeInput.value = scannerInput.trim();
+          // Submit the form
+          document.getElementById('barcodeForm').submit();
+        }
+        scannerInput = ""; // Reset the scanner input after submit
+        event.preventDefault(); // Prevent default form submission behavior
+      } else {
+        // Accumulate scanner input
+        scannerInput += event.key;
+      }
+    });
+
+    // Add event listeners as required to handle focus/blur, etc.
+  </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<%- include('partials/_header') %>
+
+<body>
+
+    <nav class="banner navbar navbar-expand-md header-stripe navbar-light" role="navigation" aria-label="main">
+        <div class="container-fluid col-12 px-lg-5">
+        <div class="row">
+  
+    
+          <div class="col-md-12">
+                      
+            
+        <img src="img/0721_PTier1_Libraries_HS_186KW_W_Digital.png" alt="Miami University Library"> Self-Checkout Station
+
+          </div>
+          </div>
+        </div>
+      </nav>
+    <div class="container patron-container">
+
+
+        <div class="row">
+        <div class="user-info">
+            <img src="img/barcoded_item1_big.gif" alt="Miami University Library">
+            <!-- Modal -->
+<div class="modal fade" id="countdownModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-body" id="modalText">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success">Stay Logged In</button>
+        </div>
+      </div>
+    </div>
+  </div>
+            <div id="countdown" style="display:none;">
+                <!-- Countdown will be displayed here -->
+              </div>
+            <h3>Welcome, <%= userdata.first_name %> <%= userdata.last_name %></h3>
+            <form action="/logout" method="GET" style="margin-top: 20px;">
+                <button type="submit">Logout</button>
+              </form>
+            <p>Current Checkouts: <%= userdata.loans.value %></p>
+            <p>Fees Due: $<%= userdata.fees.value %></p>
+        </div>
+        </div>
+
+        <% if (message) { %>
+            <div class="alert alert-<%= message.type %>">
+              <%= message.title %> <%- message.text %> <br>
+              <%= message.duedate %>
+            </div>
+          <% } %>
+
+        <div class="barcode-input">
+            <form action="/checkout" method="POST">
+                <label for="barcode">Scan Barcode:</label>
+                <input type="text" id="barcode" name="barcode" placeholder="Scan or enter barcode here" required autofocus />
+            </form>
+            
+        </div>
+
+
+        <div class="loaned-items">
+            <h5>Your Current Checkouts</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+            
+                    <% if (loandata && loandata.item_loan) { %>
+
+
+                   <% loandata.item_loan.forEach((loan) => { %>
+                 <tr class="<%= message && message.barcode && loan.item_barcode === message.barcode ? 'table-success' : '' %>">
+                    <td><%= new Date(loan.due_date).toISOString().split("T")[0] %></td>
+                    <td><%= loan.title || "No Title Available" %></td>
+                  </tr>
+                <% }) %>
+                    
+
+                    <% } else { %>
+                        <div class="no-data">No loan data available</div>
+                      <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        let inactivityTimeout;
+        let countdownInterval;
+        const timeoutDuration = <%= maxInactivityTimeout %>; 
+        const countdownDuration = 30000; // 30 seconds in milliseconds
+        const countdownElement = document.getElementById("modalText"); 
+        function startCountdown() {
+          let countdown = countdownDuration / 1000; // Start countdown from 30 seconds
+          countdownElement.textContent = "You will be logged out in " + countdown + " seconds due to inactivity.";
+          const modalElement = new bootstrap.Modal(document.getElementById('countdownModal'));
+          modalElement.show();
+          countdownInterval = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = "You will be logged out in " + countdown + " seconds due to inactivity.";
+      
+            if (countdown <= 0) {
+              clearInterval(countdownInterval); // Stop the countdown
+              location.reload(); // Reload the page
+            }
+          }, 1000); // Update the countdown every second
+        }
+      
+        function closeModal() {
+        // Close the Bootstrap modal programmatically using Bootstrap's JS API
+        const modalElement = bootstrap.Modal.getInstance(document.getElementById('countdownModal'));
+        if (modalElement) {
+            modalElement.hide();
+        }
+        }
+
+        function resetInactivityTimer() {
+          clearTimeout(inactivityTimeout);
+          clearInterval(countdownInterval); // Clear previous countdown if any
+      
+          countdownElement.style.display = "none"; // Hide countdown
+          closeModal();
+          inactivityTimeout = setTimeout(() => {
+            countdownElement.style.display = "block"; // Show countdown
+            startCountdown(); // Start the countdown
+          }, timeoutDuration - countdownDuration); // Timeout minus the countdown period
+        }
+            
+        let absoluteTimeout; 
+
+        // Session absolute timeout function
+        function resetAbsoluteTimer() {
+        clearTimeout(absoluteTimeout);
+        absoluteTimeout = setTimeout(() => {
+            location.reload(); // Reload page to update session
+        }, <%= maxSessionLength %>); // 5 minutes
+        }
+
+        // Reset timer on user interaction
+        document.addEventListener("keypress", () => {
+        resetInactivityTimer();
+        });
+        document.addEventListener("click", () => {
+        resetInactivityTimer();
+        });
+        document.addEventListener("mousemove", () => {
+        resetInactivityTimer();
+        });
+
+        // Start the timers on page load
+        resetInactivityTimer();
+        resetAbsoluteTimer();
+      </script>
+
+</body>
+</html>
