@@ -136,7 +136,7 @@
       
           countdownElement.style.display = "none"; // Hide countdown
           closeModal();
-          inactivityTimeout = (() => {
+          inactivityTimeout = setTimeout(() => {
             countdownElement.style.display = "block"; // Show countdown
             startCountdown(); // Start the countdown
           }, timeoutDuration - countdownDuration); // Timeout minus the countdown period
