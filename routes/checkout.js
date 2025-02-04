@@ -8,7 +8,8 @@ const utils = require('../helpers/utils');
 
 
 router.post("/checkout", async (req, res) => {
-    const barcode = req.body.barcode;
+    //sanitize input
+    const barcode = req.body.barcode.replace(/[^a-zA-Z0-9]/g, '');
 
     const user_id = req.session.user_id;
     const postData = {
@@ -18,14 +19,16 @@ router.post("/checkout", async (req, res) => {
     if (!barcode) {
         return res.status(400).send("Barcode is required");
       } 
-    //validate barcode
-    if (!utils.validateItemBarcode(barcode)){
+
+    //validate barcode, if configured
+    if ((appConfig.validate_barcodes) && (!utils.validateItemBarcode(barcode))){
         req.session.message = {
             type: "danger",
             text: "<strong>Error: Invalid Barcode</strong><br>Unable to check out item " + barcode + ". Please see the circulation desk.",
           };
           return res.redirect("/");
     }
+
     //API checkout URL
     const loanURL = `${appConfig.AlmaAPI}/almaws/v1/users/${user_id}/loans?item_barcode=${barcode}&apikey=${appConfig.API_KEY}&format=json`;
     try {

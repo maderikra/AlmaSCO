@@ -4,14 +4,27 @@ const appConfig = require('../config/config');
 const luhn = require("luhn");
 
 
-function validateItemBarcode(barcode){
-  if (appConfig.barcode_format == 'luhn'){
-    return luhn.validate(barcode);
-  }
-  else if (appConfig.barcode_format == 'modulo43'){
-    return validateModulo43(barcode);
-  }
+//function to validate item barcode prefix
+function barcodePrefix(str) {
+    return str.startsWith(appConfig.barcode_prefix);
 }
+
+//validate item barcode
+function validateItemBarcode(barcode) {
+    if (!barcodePrefix(barcode)) {
+      return false;
+    }
+  
+    switch (appConfig.barcode_format) {
+      case 'luhn':
+        return luhn.validate(barcode);
+      case 'modulo43':
+        return validateModulo43(barcode);
+      default:
+        return false;
+    }
+  }
+  
 
   function validateModulo43(barcode) {
     // List of characters in the Code 39 barcode specification

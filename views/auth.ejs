@@ -7,7 +7,7 @@
 <body>
     <div class="homeMessage"><img src="img/0721_PTier1_Libraries_HS_186KW_W_Digital.png" alt="Miami University Library">
     <h1>Self-Checkout Station</h1>
-    <div class="welcomeText">Touch screen then tap your Miami ID to begin<br><i class='bx bxs-id-card'></i></div>
+    <div class="welcomeText"><br><i class='bx bxs-id-card'></i><br>Touch screen then tap your Miami ID to begin</div>
 </div>
 
 <% if (message) { %>
@@ -33,7 +33,7 @@
       if (event.key === "Enter") {
         if (scannerInput.length > 0) {
           // Enter key pressed, set the value of the hidden input
-          barcodeInput.value = scannerInput.trim();
+          barcodeInput.value = scannerInput.replace(/[^a-zA-Z0-9]/g, '').trim();
           // Submit the form
           document.getElementById('barcodeForm').submit();
         }

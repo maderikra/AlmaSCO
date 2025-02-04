@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const app = express();
+const hpp = require('hpp');
 const PORT = 3003;
 const appConfig = require('./config/config'); 
 const bodyParser = require("body-parser");
@@ -46,11 +47,13 @@ app.use((req, res, next) => {
   });
 
 // Middleware to serve static files
-app.use(express.json());
+
+app.use(express.json({ limit: "1kb" }));
 app.use(express.static("public"));
 
 // Middleware for parsing POST data
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(hpp());
 
 app.locals.baseURL = appConfig.baseUrl;
 app.use('/', authRoute);

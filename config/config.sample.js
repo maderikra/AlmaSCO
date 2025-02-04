@@ -4,6 +4,8 @@ const appConfig = {
     API_KEY: '',
     alma_circ_desk: '',
     alma_library: '',
+    validate_barcodes: true, //true or false
+    barcode_prefix: '',
     barcode_format: '', // luhn or modulo43
     baseUrl: '/',
     inactivityTimeout: 2, // in minutes; maximum inactivity length
