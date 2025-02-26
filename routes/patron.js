@@ -31,9 +31,10 @@ router.get("/", async (req, res) => {
             maxInactivityTimeout: (appConfig.inactivityTimeout * 1000 * 60),
             maxSessionLength: (appConfig.maxSessionLength * 1000 * 60) });
         } catch (error) {
-            const almaError = error.response.data.errorList.error[0].errorMessage
+            //const almaError = error.response.data.errorList.error[0].errorMessage
+            const almaError = error.response.data
          // console.error("Error fetching data:", error.message);
-          res.status(500).send("Error fetching data.");
+          res.status(500).send(almaError);
         }
       } else {
         // Render the button choice if the user is not authenticated
