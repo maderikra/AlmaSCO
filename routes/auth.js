@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 const axios = require('axios');
 const utils = require('../helpers/utils');
+const xmlformatter = require("xml-formatter");
+
 
 
 router.post("/auth", async (req, res) => {
@@ -35,9 +37,11 @@ router.post("/auth", async (req, res) => {
               return res.redirect("/");
         }
       } catch (error) {
-         console.log(error)
-       // console.error("Error fetching data:", error.message);
-        res.status(500).send("Error fetching data.");
+        console.log(error)
+        const almaError = error.response.data
+        const formattedXml = xmlformatter(almaError, { indentation: "  ", collapseContent: true });
+        console.error("Error fetching data:", error);
+        return res.render("error", { almaError: formattedXml });
       }
 
     
