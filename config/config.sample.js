@@ -8,7 +8,7 @@ const appConfig = {
     baseUrl: '/',
     inactivityTimeout: 2, // in minutes; maximum inactivity length
     maxSessionLength: 10, // in minutes; maximum session length since last transaction, regardless of activity (do not set too low)
-      
+    port: 3003,
 };
 
 
