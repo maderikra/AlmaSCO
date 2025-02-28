@@ -1,7 +1,6 @@
 const express = require("express");
 require("dotenv").config();
 const app = express();
-const PORT = 3007;
 const appConfig = require('./config/config'); 
 const bodyParser = require("body-parser");
 const authRoute = require('./routes/auth');
@@ -67,7 +66,7 @@ app.use('/', logoutRoute);
 
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(appConfig.port, () => {
   console.log(`Server is running on http://localhost:${appConfig.port}`);
 });
 
