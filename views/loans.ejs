@@ -56,11 +56,15 @@
           <% } %>
 
         <div class="barcode-input">
-            <form action="/checkout" method="POST">
-                <label for="barcode">Scan Barcode:</label>
-                <input type="text" id="barcode" name="barcode" placeholder="Scan or enter barcode here" required autofocus />
+        <!--    <form > -->
+                <form id="checkoutForm" action="/checkout" method="POST">
+                <label for="barcode">Scan Barcode:</label>             
+
+                <div class="input-container">
+                    <input type="text" id="barcode" name="barcode" placeholder="Scan or enter barcode here" required autofocus />
+                    <div id="loadingIndicator" class="loader" style="visibility: hidden;"></div>
+                </div>
             </form>
-            
         </div>
 
 
@@ -96,6 +100,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
+        
         let inactivityTimeout;
         let countdownInterval;
         const timeoutDuration = <%= maxInactivityTimeout %>; 
@@ -161,6 +166,49 @@
         // Start the timers on page load
         resetInactivityTimer();
         resetAbsoluteTimer();
+
+        
+        document.getElementById('checkoutForm').addEventListener('submit', function() {
+    document.getElementById('loadingIndicator').style.visibility = 'visible'; // Show the loading indicator
+    // Optionally, disable the submit button to prevent multiple submits
+    //this.querySelector('button[type="submit"]').disabled = true;
+});
+
+//document.getElementById('barcode').addEventListener('keypress', function(event) {
+ //   if (event.key === 'Enter') {
+  //      event.preventDefault(); // Prevent default form submission
+   //     submitCheckoutForm(); // Call the function directly instead of dispatching an event
+    //}
+//});
+
+function submitCheckoutForm() {
+    // Show loading indicator
+    document.getElementById('loadingIndicator').style.visibility = 'visible';
+
+    // Collect data from the form
+    const barcode = document.getElementById('barcode').value.trim();
+
+    // Perform the AJAX call to the server
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/checkout', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            document.getElementById('loadingIndicator').style.display = 'none';
+
+            if (xhr.status === 200) {
+                location.reload(); 
+            } else {
+                alert("Fail");
+            }
+        }
+    };
+
+    // Send the request with the barcode data
+    xhr.send(JSON.stringify({ barcode: barcode }));
+}
+
       </script>
 
 </body>

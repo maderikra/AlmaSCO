@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const app = express();
-const PORT = 3003;
+const PORT = 3007;
 const appConfig = require('./config/config'); 
 const bodyParser = require("body-parser");
 const authRoute = require('./routes/auth');
