@@ -2,6 +2,7 @@
 const appConfig = {
     AlmaAPI: '',
     API_KEY: '',
+    session_secret: '',
     alma_circ_desk: '',
     alma_library: '',
     barcode_format: '', // luhn or modulo43
