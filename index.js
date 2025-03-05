@@ -16,7 +16,7 @@ const absoluteMaxAge = 20 * 60 * 1000; // 20 minutes
 
 app.use(
     session({
-      secret: "this is my secret there are many like it", // Replace with a strong secret in production
+      secret: appConfig.session_secret, // Replace with a strong secret in production
       resave: false,
       saveUninitialized: true,
       cookie: { 
