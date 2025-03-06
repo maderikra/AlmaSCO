@@ -81,7 +81,7 @@
             
                     <% if (loandata && loandata.item_loan) { %>
 
-
+                        <!-- Always show nost recently transacted item first -->
                         <% loandata.item_loan.forEach((loan) => { %>
                             <% if (message && message.barcode && loan.item_barcode === message.barcode) { %>
                               <tr class="table-success">
@@ -91,6 +91,7 @@
                             <% } %>
                           <% }) %>
                           
+                          <!-- List other items in original order (by due date) -->
                           <% loandata.item_loan.forEach((loan) => { %>
                             <% if (!message || !message.barcode || loan.item_barcode !== message.barcode) { %>
                               <tr>
