@@ -81,14 +81,25 @@
             
                     <% if (loandata && loandata.item_loan) { %>
 
-
-                   <% loandata.item_loan.forEach((loan) => { %>
-                 <tr class="<%= message && message.barcode && loan.item_barcode === message.barcode ? 'table-success' : '' %>">
-                    <td><%= new Date(loan.due_date).toISOString().split("T")[0] %></td>
-                    <td><%= loan.title || "No Title Available" %></td>
-                  </tr>
-                <% }) %>
-                    
+                        <!-- Always show nost recently transacted item first -->
+                        <% loandata.item_loan.forEach((loan) => { %>
+                            <% if (message && message.barcode && loan.item_barcode === message.barcode) { %>
+                              <tr class="table-success">
+                                <td><%= new Date(loan.due_date).toISOString().split("T")[0] %></td>
+                                <td><%= loan.title || "No Title Available" %></td>
+                              </tr>
+                            <% } %>
+                          <% }) %>
+                          
+                          <!-- List other items in original order (by due date) -->
+                          <% loandata.item_loan.forEach((loan) => { %>
+                            <% if (!message || !message.barcode || loan.item_barcode !== message.barcode) { %>
+                              <tr>
+                                <td><%= new Date(loan.due_date).toISOString().split("T")[0] %></td>
+                                <td><%= loan.title || "No Title Available" %></td>
+                              </tr>
+                            <% } %>
+                          <% }) %>
 
                     <% } else { %>
                         <div class="no-data">No loan data available</div>
